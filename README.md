@@ -64,17 +64,17 @@ instance.
 ```terraform
 resource "exoscale_securitygroup" "sglabel" {
     name = "sgname"
-    ingressRules = {
+    ingress_rules = {
       cidr = "0.0.0.0/0"
       protocol = "TCP"
       port = 22
     }
-    egressRules = {
+    egress_rules = {
       cider = "192.168.1.0/24"
       protocol = "TCP"
       port = 22
     }
-    egressRules = {
+    egress_rules = {
       cidr = "192.168.1.0/24"
       protocol = "ICMP"
       icmptype = 0
@@ -84,13 +84,13 @@ resource "exoscale_securitygroup" "sglabel" {
 ```
 
 * ```name``` Security Group name as it will be referenced in the instances
-* ```ingressRules``` One or more rules to describe which ports will be permitted inbound
+* ```ingress_rules``` One or more rules to describe which ports will be permitted inbound
  * ```cidr``` A network address range to reflect who would be impacted
  * ```protocol``` Indicate the type to look for TCP, UDP, or ICMP
  * ```port``` For TCP/UDP the port number of the service impacted
  * ```icmptype``` ICMP message type
  * ```icmpcode``` ICMP message code
-* ```egressRules``` One or more rules to describe which ports will be permitted outbound
+* ```egress_rules``` One or more rules to describe which ports will be permitted outbound
  * ```cidr``` A network address range to reflect who would be impacted
  * ```protocol``` Indicate the type to look for TCP, UDP, or ICMP
  * ```port``` For TCP/UDP the port number of the service impacted
@@ -107,7 +107,7 @@ resource "exoscale_compute" "computelabel" {
     template = "ubuntu-16.04"
     zone = "ch-gva-2"
     size = "Micro"
-    diskSize = 10
+    disk_size = 10
     keypair = "terraformKey"
     affinitygroups = ["terraformag"]
     securitygroups = ["sshgroup"]
@@ -125,7 +125,7 @@ resource "exoscale_compute" "computelabel" {
  * Large
  * Extra-Large
  * Huge
-* ```diskSize``` Define the size of the root disk: 10GB, 50GB, 100GB, 200GB, 400GB
+* ```disk_size``` Define the size of the root disk: 10GB, 50GB, 100GB, 200GB, 400GB
 * ```zone``` One of the two datacenters: CH-DK-2 and CH-GVA-2
 * ```keypair``` The SSH key used for root access to the host
 * ```affinitygroups``` Collection of anti-affinity groups the host will belong to

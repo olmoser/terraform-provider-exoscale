@@ -33,7 +33,7 @@ func computeResource() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
-			"diskSize": &schema.Schema{
+			"disk_size": &schema.Schema{
 				Type:		schema.TypeInt,
 				Required:	true,
 				ForceNew:	true,
@@ -92,7 +92,7 @@ func resourceCreate(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
-	diskSize := d.Get("diskSize").(int)
+	diskSize := d.Get("disk_size").(int)
 	service := topo.Profiles[strings.ToLower(d.Get("size").(string))]
 
 	if service == "" {
@@ -101,12 +101,12 @@ func resourceCreate(d *schema.ResourceData, meta interface{}) error {
 
 	zone := topo.Zones[strings.ToLower(d.Get("zone").(string))]
 	if zone == "" {
-		return fmt.Errorf("Invalid zone: %s", d.Get("zone").(string))		
+		return fmt.Errorf("Invalid zone: %s", d.Get("zone").(string))
 	}
 
 	template := topo.Images[convertTemplateName(d.Get("template").(string))]
 	if template == nil {
-		return fmt.Errorf("Invalid template: %s", d.Get("template").(string))				
+		return fmt.Errorf("Invalid template: %s", d.Get("template").(string))
 	}
 
 	templateId := template[diskSize]
@@ -137,7 +137,7 @@ func resourceCreate(d *schema.ResourceData, meta interface{}) error {
 			if sgId != "" {
 				securityGroups[i] = sgId
 			} else {
-				return fmt.Errorf("Invalid security group: %s\n", d.Get(sg).(string))				
+				return fmt.Errorf("Invalid security group: %s\n", d.Get(sg).(string))
 			}
 		}
 	}
