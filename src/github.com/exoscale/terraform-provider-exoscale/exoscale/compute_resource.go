@@ -9,7 +9,10 @@ import (
 
 	"github.com/hashicorp/terraform/helper/schema"
 	"github.com/pyr/egoscale/src/egoscale"
+	"errors"
 )
+
+const DelayBeforeRetry = 5 // seconds
 
 func computeResource() *schema.Resource {
 	return &schema.Resource{
@@ -157,17 +160,29 @@ func resourceCreate(d *schema.ResourceData, meta interface{}) error {
 		return err
 	}
 
+	var timeoutSeconds = meta.(BaseConfig).timeout
+	var retries = timeoutSeconds / DelayBeforeRetry
+
 	var resp *egoscale.QueryAsyncJobResultResponse
-	for i := 0; i < 6; i++ {
+	var succeeded = false
+	for i := 0; i < retries; i++ {
 		resp, err = client.PollAsyncJob(jobId); if err != nil {
 			return err
 		}
 
 		if resp.Jobstatus == 1 {
+			succeeded = true
 			break
 		}
-		time.Sleep(5 * time.Second)
+
+		time.Sleep(DelayBeforeRetry * time.Second)
 	}
+
+	if !succeeded {
+		return errors.New(fmt.Sprintf("Virtual machine creation did not succeed within %d seconds. You may increase " +
+			"the timeout in the provider configuration.", timeoutSeconds))
+	}
+
 
 	vm, err := client.AsyncToVirtualMachine(*resp); if err != nil {
 		return err

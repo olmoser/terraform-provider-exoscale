@@ -20,11 +20,15 @@ resource plugin.  Additional documentation can be found in the examples director
 provider "exoscale" {
     token = ""
     secret = ""
+    timeout = 60
 }
 
 ```
 You are required to provide at least the OAuth API token and secret key in order
 to make use of the remaining Terraform resources.
+
+The `timeout` is the maximum amount of time (in seconds, default: `60`) to wait for async tasks to complete. Currently, this is used
+during the creation of `compute` and `anti-affinity` resources.
 
 You can specify the environment variables for these using ```EXOSCALE_API_SECRET```
 or ```EXOSCALE_API_KEY```.  You can also use the cloudstack environment variables
